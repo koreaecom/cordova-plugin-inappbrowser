@@ -1192,7 +1192,9 @@ public class InAppBrowser extends CordovaPlugin {
                     LOG.e(LOG_TAG, "Error sending loaderror for " + url + ": " + e.toString());
                 }
             }
-
+            /**
+            * intent:// >> intent:
+            */
             if(url.startsWith("intent:")) {
                 try {
                 Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
