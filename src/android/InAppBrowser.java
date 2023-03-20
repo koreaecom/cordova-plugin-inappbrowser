@@ -1194,8 +1194,9 @@ public class InAppBrowser extends CordovaPlugin {
             }
             /**
             * intent:// >> intent:
+            * 원복 intent://
             */
-            if(url.startsWith("intent:")) {
+            if(url.startsWith("intent://")) {
                 try {
                 Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                 Intent existPackage = cordova.getActivity().getPackageManager().getLaunchIntentForPackage(cordova.getActivity().getPackageName());
@@ -1222,12 +1223,25 @@ public class InAppBrowser extends CordovaPlugin {
                     LOG.e(LOG_TAG, "Error dialing " + url + ": " + e.toString());
                 }
             } else if (url.startsWith("geo:") || url.startsWith(WebView.SCHEME_MAILTO) || url.startsWith("market:") || url.startsWith("intent:")) {
+                //Intent 수정
                 try {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    cordova.getActivity().startActivity(intent);
-                    override = true;
-                } catch (android.content.ActivityNotFoundException e) {
+                    Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                    String packgeName = String.valueOf(intent.getPackage());
+						
+                     if (packgeName != null && packgeName.length()>0 && !packgeName.equals("") && !packgeName.contains("null")) {
+                            Intent existPackage = cordova.getActivity().getPackageManager().getLaunchIntentForPackage(intent.getPackage());
+
+                            if (existPackage != null) {
+                                   cordova.getActivity().startActivity(intent);
+                                   override = true;
+                            } else {
+                               Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+                               marketIntent.setData(Uri.parse("market://details?id="+packgeName));
+                               cordova.getActivity().startActivity(marketIntent);
+                               override = true;
+                           }
+                    }
+                } catch (ActivityNotFoundException | java.net.URISyntaxException e) {
                     LOG.e(LOG_TAG, "Error with " + url + ": " + e.toString());
                 }
             }
