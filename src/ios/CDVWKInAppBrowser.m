@@ -540,8 +540,9 @@ static CDVWKInAppBrowser* instance = nil;
     }
     
     //if is an app store, tel, sms, mailto or geo link, let the system handle it, otherwise it fails to load it
-    NSArray * allowedSchemes = @[@"itms-appss", @"itms-apps", @"tel", @"sms", @"mailto", @"geo"];
-    if ([allowedSchemes containsObject:[url scheme]]) {
+    //NSArray * allowedSchemes = @[@"itms-appss", @"itms-apps", @"tel", @"sms", @"mailto", @"geo"];
+    NSArray * allowedSchemes = @[@"https", @"http"];
+    if (![allowedSchemes containsObject:[url scheme]]) {
         [theWebView stopLoading];
         [self openInSystem:url];
         shouldStart = NO;
