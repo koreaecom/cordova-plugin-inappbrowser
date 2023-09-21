@@ -1193,18 +1193,18 @@ public class InAppBrowser extends CordovaPlugin {
                 }
             }
             
-            if(url.startsWith("intent://")) {
+            if(url.startsWith("intent:") || url.startsWith("intent://")) {
                 try {
-                Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
-                Intent existPackage = cordova.getActivity().getPackageManager().getLaunchIntentForPackage(cordova.getActivity().getPackageName());
-                if (existPackage != null) {
-                    cordova.getActivity().startActivity(intent);
-                } else {
-                        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
-                        marketIntent.setData(Uri.parse("market://details?id="+cordova.getActivity().getPackageName()));
-                        cordova.getActivity().startActivity(marketIntent);
-                }
-                return true; // true return시 인앱브라우저에서 해당 url을 렌더링하지 않음
+	                Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+	                Intent existPackage = cordova.getActivity().getPackageManager().getLaunchIntentForPackage(cordova.getActivity().getPackageName());
+	                if (existPackage != null) {
+	                    cordova.getActivity().startActivity(intent);
+	                } else {
+	                        Intent marketIntent = new Intent(Intent.ACTION_VIEW);
+	                        marketIntent.setData(Uri.parse("market://details?id="+cordova.getActivity().getPackageName()));
+	                        cordova.getActivity().startActivity(marketIntent);
+	                }
+	                return true; // true return시 인앱브라우저에서 해당 url을 렌더링하지 않음
                 } catch (Exception e) {
                         LOG.e(LOG_TAG, "Error with " + url + ": " + e.toString());
                 }
